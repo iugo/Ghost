@@ -94,6 +94,16 @@ User = ghostBookshelf.Model.extend({
         return attrs;
     },
 
+    format: function (options) {
+        if (!_.isEmpty(options.website) &&
+            !validator.isURL(options.website, {
+            require_protocol: true,
+            protocols: ['http', 'https']})) {
+            options.website = 'http://' + options.website;
+        }
+        return options;
+    },
+
     posts: function () {
         return this.hasMany('Posts', 'created_by');
     },
@@ -849,7 +859,7 @@ User = ghostBookshelf.Model.extend({
                 resolve(userData);
             }
 
-            request({url: gravatarUrl, timeout: 2000}, function (err, response) {
+            request({url: 'http:' + gravatarUrl, timeout: 2000}, function (err, response) {
                 if (err) {
                     // just resolve with no image url
                     resolve(userData);
