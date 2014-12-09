@@ -376,7 +376,7 @@ describe('Frontend Routing', function () {
 
         it('should respond with xml', function (done) {
             request.get('/rss/')
-                .expect('Content-Type', 'text/xml; charset=utf-8')
+                .expect('Content-Type', 'application/rss+xml; charset=utf-8')
                 .expect('Cache-Control', testUtils.cacheRules['public'])
                 .expect(200)
                 .end(function (err, res) {
@@ -899,7 +899,7 @@ describe('Frontend Routing', function () {
 
         it('should serve RSS with date permalink', function (done) {
             request.get('/rss/')
-                .expect('Content-Type', 'text/xml; charset=utf-8')
+                .expect('Content-Type', 'application/rss+xml; charset=utf-8')
                 .expect('Cache-Control', testUtils.cacheRules['public'])
                 .expect(200)
                 .end(function (err, res) {
@@ -924,5 +924,38 @@ describe('Frontend Routing', function () {
                     done();
                 });
         });
+    });
+
+    describe('Site Map', function () {
+        before(function (done) {
+            testUtils.initData().then(function () {
+                return testUtils.fixtures.insertPosts();
+            }).then(function () {
+                done();
+            }).catch(done);
+        });
+
+        it('should serve sitemap.xml', function (done) {
+            request.get('/sitemap.xml')
+                .expect(200)
+                .expect('Content-Type', 'text/xml; charset=utf-8')
+                .end(doEnd(done));
+        });
+
+        it('should serve sitemap-posts.xml', function (done) {
+            request.get('/sitemap-posts.xml')
+                .expect(200)
+                .expect('Content-Type', 'text/xml; charset=utf-8')
+                .end(doEnd(done));
+        });
+
+        it('should serve sitemap-pages.xml', function (done) {
+            request.get('/sitemap-posts.xml')
+                .expect(200)
+                .expect('Content-Type', 'text/xml; charset=utf-8')
+                .end(doEnd(done));
+        });
+
+        // TODO: Other pages and verify content
     });
 });
